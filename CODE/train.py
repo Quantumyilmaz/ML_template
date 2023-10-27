@@ -75,13 +75,13 @@ def load_optimizer(model):
         raise NotImplementedError
     return optimizer
 
-def load_scheduler(optimizer,logger):
+def load_scheduler(optimizer):
     if cfg.OPTIMIZER.LR_SCHEDULER.lower() == 'steplr':
         scheduler = StepLR(optimizer, step_size=cfg.OPTIMIZER.STEP_SIZE, gamma=cfg.OPTIMIZER.DECAY_FACTOR)
-        logger.info('Using scheduler: StepLR')
+        # logger.info('Using scheduler: StepLR')
     elif cfg.OPTIMIZER.LR_SCHEDULER.lower() =='reducelronplateau':
         scheduler = ReduceLROnPlateau(optimizer, factor=cfg.OPTIMIZER.DECAY_FACTOR,patience=cfg.OPTIMIZER.SCHEDULER_PATIENCE,min_lr=cfg.OPTIMIZER.MIN_LR,verbose=1)
-        logger.info('Using scheduler: ReduceLROnPlateau')
+        # logger.info('Using scheduler: ReduceLROnPlateau')
     elif cfg.OPTIMIZER.LR_SCHEDULER == 'custom':...
         # scheduler = CustomLR
         # logger.info('Using scheduler: CustomLR')
@@ -134,7 +134,7 @@ def load_trainer(model,X_train,y_train,logger,is_tuning=False):
         model = DataParallel(model.cuda())
 
     optimizer = load_optimizer(model=model)
-    scheduler = load_scheduler(optimizer=optimizer,logger=logger)
+    scheduler = load_scheduler(optimizer=optimizer)#,logger=logger)
     criterion = load_criterion()
 
     output_dir = cfg.PATH.MODELS+f"/{model.name}/ckpts"
